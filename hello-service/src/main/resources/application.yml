@@ -1,0 +1,8 @@
+# Properties
+spring:
+  rsocket:
+    server:
+      port: 7777
+
+      transport: websocket
+      mapping-path: /
