@@ -1,17 +1,25 @@
 package example.service.hello.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.rsocket.MetadataExtractor;
 import org.springframework.messaging.rsocket.RSocketRequester;
 import org.springframework.messaging.rsocket.annotation.ConnectMapping;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Controller;
 import reactor.core.publisher.Mono;
+
+import java.security.Principal;
 
 /**
  * Controller that generates hello messages.
  */
 @Controller
 public class HelloController {
+
+	@Autowired
+	private MetadataExtractor metadataExtractor;
 
 	@ConnectMapping
 	public Mono<Void> handleConnection(RSocketRequester requester, @Payload(required = false) String data) {
@@ -45,8 +53,18 @@ public class HelloController {
      * @return hello message
      */
     @MessageMapping("hello.secure")
-    public Mono<String> helloSecure(@Payload String name) {
+    public Mono<String> helloSecure(Principal principal, @Payload String name) {
 		System.out.println("name = " + name);
+
+		if (principal instanceof JwtAuthenticationToken) {
+			JwtAuthenticationToken jwtAuth = (JwtAuthenticationToken) principal;
+			String jwtToken = jwtAuth.getToken().getTokenValue();
+			System.out.println("JWT Token: " + jwtToken);
+			System.out.println("JWT Claims: " + jwtAuth.getTokenAttributes());
+		} else {
+			System.out.println("Principal is not JWT-based.");
+		}
+
         return Mono.just(String.format("Hello, %s! - from secured method", name));
     }
 

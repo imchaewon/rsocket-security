@@ -6,3 +6,12 @@ spring:
 
       transport: websocket
       mapping-path: /
+
+logging:
+  level:
+      org:
+        springframework:
+          security:
+            rsocket: DEBUG
+      io:
+        rsocket: DEBUG

@@ -3,6 +3,8 @@ package example.service.hello.config;
 import org.springframework.boot.rsocket.server.RSocketServerCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.messaging.rsocket.DefaultMetadataExtractor;
+import org.springframework.messaging.rsocket.MetadataExtractor;
 import org.springframework.messaging.rsocket.RSocketStrategies;
 import org.springframework.security.config.annotation.rsocket.EnableRSocketSecurity;
 import org.springframework.security.config.annotation.rsocket.RSocketSecurity;
@@ -25,6 +27,11 @@ import javax.crypto.spec.SecretKeySpec;
 @Configuration
 @EnableRSocketSecurity
 public class RSocketSecurityConfiguration {
+
+	@Bean
+	public MetadataExtractor metadataExtractor() {
+		return new DefaultMetadataExtractor();
+	}
 
     @Bean
     public PayloadSocketAcceptorInterceptor rsocketInterceptor(RSocketSecurity rsocket) {
