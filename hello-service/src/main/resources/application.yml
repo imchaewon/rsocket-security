@@ -3,9 +3,12 @@ spring:
   rsocket:
     server:
       port: 7777
-
       transport: websocket
-      mapping-path: /
+      mapping-path: /rsocket
+#    message-mapping:
+#      mime-type: application/json
+#    metadata-mapping:
+#      mime-type: message/x.rsocket.composite-metadata.v0
 
 logging:
   level:

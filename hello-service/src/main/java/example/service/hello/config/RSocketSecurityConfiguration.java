@@ -1,5 +1,6 @@
 package example.service.hello.config;
 
+import io.rsocket.metadata.WellKnownMimeType;
 import org.springframework.boot.rsocket.server.RSocketServerCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,6 +17,7 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtGra
 import org.springframework.security.oauth2.server.resource.authentication.JwtReactiveAuthenticationManager;
 import org.springframework.security.oauth2.server.resource.authentication.ReactiveJwtAuthenticationConverterAdapter;
 import org.springframework.security.rsocket.core.PayloadSocketAcceptorInterceptor;
+import org.springframework.util.MimeType;
 import org.springframework.util.MimeTypeUtils;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.reactive.CorsConfigurationSource;
@@ -91,5 +93,23 @@ public class RSocketSecurityConfiguration {
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		source.registerCorsConfiguration("/**", configuration);
 		return source;
+	}
+
+	@Bean
+	public RSocketStrategies rSocketStrategies() {
+		return RSocketStrategies.builder()
+			.metadataExtractorRegistry(registry -> {
+				// 라우팅 정보 추출 설정
+				registry.metadataToExtract(
+					MimeType.valueOf(WellKnownMimeType.MESSAGE_RSOCKET_ROUTING.getString()),
+					String.class, "route"
+				);
+				// 인증 정보 추출 설정
+				registry.metadataToExtract(
+					MimeType.valueOf(WellKnownMimeType.MESSAGE_RSOCKET_AUTHENTICATION.getString()),
+					String.class, "bearer"
+				);
+			})
+			.build();
 	}
 }

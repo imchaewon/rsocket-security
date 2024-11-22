@@ -1,6 +1,7 @@
 package example.service.hello.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.rsocket.MetadataExtractor;
@@ -9,6 +10,8 @@ import org.springframework.messaging.rsocket.annotation.ConnectMapping;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Controller;
 import reactor.core.publisher.Mono;
+import io.rsocket.metadata.CompositeMetadata;
+import io.rsocket.metadata.CompositeMetadataCodec;
 
 import java.security.Principal;
 
@@ -43,6 +46,7 @@ public class HelloController {
      */
     @MessageMapping("hello")
     public Mono<String> hello(String name) {
+		System.out.println("name = " + name);
         return Mono.just(String.format("Hello, %s! - from unsecured method", name));
     }
 
@@ -53,8 +57,9 @@ public class HelloController {
      * @return hello message
      */
     @MessageMapping("hello.secure")
-    public Mono<String> helloSecure(Principal principal, @Payload String name) {
+    public Mono<String> helloSecure(Principal principal, @Payload String name, @Header("route") String route) {
 		System.out.println("name = " + name);
+		System.out.println("Route: " + route);
 
 		if (principal instanceof JwtAuthenticationToken) {
 			JwtAuthenticationToken jwtAuth = (JwtAuthenticationToken) principal;
