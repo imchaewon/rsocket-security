@@ -1,7 +1,9 @@
 package example.service.hello.controller;
 
+import io.rsocket.util.DefaultPayload;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.Header;
+import org.springframework.messaging.handler.annotation.Headers;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.rsocket.MetadataExtractor;
@@ -14,6 +16,7 @@ import io.rsocket.metadata.CompositeMetadata;
 import io.rsocket.metadata.CompositeMetadataCodec;
 
 import java.security.Principal;
+import java.util.Map;
 
 /**
  * Controller that generates hello messages.
@@ -25,16 +28,14 @@ public class HelloController {
 	private MetadataExtractor metadataExtractor;
 
 	@ConnectMapping
-	public Mono<Void> handleConnection(RSocketRequester requester, @Payload(required = false) String data) {
+//	public Mono<Void> handleConnection(RSocketRequester requester, @Payload(required = false) String data) {
+	public Mono<Void> handleConnection(RSocketRequester requester, @Headers Map<String, Object> headers) {
 		System.out.println("New RSocket connection established.");
 
-		if (data != null) {
-			System.out.println("Payload from client: " + data);
-		} else {
-			System.out.println("No payload received from client.");
-		}
+		headers.forEach((key, value) -> {
+			System.out.println("Header Key: " + key + ", Value: " + value);
+		});
 
-		// 추가적으로 연결된 클라이언트 정보나 로직을 처리할 수 있습니다.
 		return Mono.empty();
 	}
 
@@ -49,6 +50,20 @@ public class HelloController {
 		System.out.println("name = " + name);
         return Mono.just(String.format("Hello, %s! - from unsecured method", name));
     }
+
+	@MessageMapping("message.send")
+	public Mono<Void> handleMessageSend(@Payload String data, @Headers Map<String, Object> metadata) {
+		System.out.println("Payload received: " + data);
+
+		// Metadata를 직접 추출
+		if (metadata != null) {
+			metadata.forEach((key, value) -> {
+				System.out.println("Metadata Key: " + key + ", Value: " + value);
+			});
+		}
+
+		return Mono.empty();
+	}
 
     /**
      * Return a hello message for any authenticated user.
