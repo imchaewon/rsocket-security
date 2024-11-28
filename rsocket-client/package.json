@@ -1,8 +1,0 @@
-{
-  "type": "module",
-  "dependencies": {
-    "rsocket-core": "^0.0.29-alpha.0",
-    "rsocket-types": "^0.0.29-alpha.0",
-    "rsocket-websocket-client": "^0.0.29-alpha.0"
-  }
-}
