@@ -10,13 +10,13 @@ import reactor.core.publisher.Mono;
 import java.util.ArrayList;
 import java.util.List;
 
-@Component
-public class RSocketAuthenticationManager implements ReactiveAuthenticationManager {
-
-	@Override
-	public Mono<Authentication> authenticate(Authentication authentication) {
-		System.out.println("authenticate called with key " + authentication.getCredentials().toString());
-		List<GrantedAuthority> authorities = new ArrayList<>();
-		return Mono.just(new UsernamePasswordAuthenticationToken("test", null, authorities));
-	}
-}
+//@Component
+//public class RSocketAuthenticationManager implements ReactiveAuthenticationManager {
+//
+//	@Override
+//	public Mono<Authentication> authenticate(Authentication authentication) {
+//		System.out.println("authenticate called with key " + authentication.getCredentials().toString());
+//		List<GrantedAuthority> authorities = new ArrayList<>();
+//		return Mono.just(new UsernamePasswordAuthenticationToken("test", null, authorities));
+//	}
+//}
