@@ -8,13 +8,10 @@ import {
 import Metadata from "./metadata";
 import {useState} from "react";
 
-const wsUrl = "ws://localhost:7777";
-// const randomJwt = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9." +
-//     "eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ." +
-//     "SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
-const randomJwt = "valid-token";
-const responseRoute = "response";
-const streamRoute = "stream";
+const wsUrl = "ws://localhost:9899";
+const jwt = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhdGsiLCJpZCI6MzY0MiwiZW1haWwiOiJjdy5pbUBva2VzdHJvLmNvbSIsImlhdCI6MTcyMTE5OTIwOCwiY29tcGxldGVkMkZBIjp0cnVlfQ.hMZ_0iOZBYQpf900YjGtYAqlSXN0CZFz79T6Z3GOwbOgSGdCmv75EuS77irj_UR6sFt3i9aQaCZEft_Vn9Wv7Q";
+const streamRoute = "notification-local.subscribe";
+const responseRoute = "notification-local.unsubscribe";
 
 function Test() {
   const [client, setClient] = useState(null);
@@ -27,7 +24,7 @@ function Test() {
     // requestStream never triggers the authenticate method
     const metadata = new Metadata({
       route: streamRoute,
-      auth: {type: "bearer", token: randomJwt}
+      auth: {type: "bearer", token: jwt}
     }).toMetadata();
     socket.requestStream({
       metadata
@@ -46,7 +43,7 @@ function Test() {
     // request response triggers the authenticate method
     const metadata = new Metadata({
       route: responseRoute,
-      auth: {type: "bearer", token: randomJwt}
+      auth: {type: "bearer", token: jwt}
     }).toMetadata();
     socket.requestResponse({
       metadata
